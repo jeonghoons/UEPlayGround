@@ -25,19 +25,20 @@ public class Test : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] {
 			"Test",
-			"Test/Variant_Platforming",
-			"Test/Variant_Platforming/Animation",
 			"Test/Variant_Combat",
 			"Test/Variant_Combat/AI",
 			"Test/Variant_Combat/Animation",
 			"Test/Variant_Combat/Gameplay",
 			"Test/Variant_Combat/Interfaces",
 			"Test/Variant_Combat/UI",
-			"Test/Variant_SideScrolling",
-			"Test/Variant_SideScrolling/AI",
-			"Test/Variant_SideScrolling/Gameplay",
-			"Test/Variant_SideScrolling/Interfaces",
-			"Test/Variant_SideScrolling/UI"
+			"Test/MMO",
+			"Test/MMO/Core",
+			"Test/MMO/Backend",
+			"Test/MMO/Character",
+			"Test/MMO/Combat",
+			"Test/MMO/Animation",
+			"Test/MMO/Data",
+			"Test/MMO/UI"
 		});
 
 		// Uncomment if you are using Slate UI
