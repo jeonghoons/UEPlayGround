@@ -3,19 +3,20 @@
 진행 상황과 작업 순서를 기록합니다. 설계(목표 아키텍처)는 `DESIGN_*.md`, 확정된 결정은 `DECISIONS.md`에 둡니다.
 **한 번에 하나의 체크박스만 진행하고, 완료하면 즉시 `[x]`로 갱신합니다.**
 
-현재 위치: **Phase 0**
+현재 위치: **Phase 1**
 
 ## Phase 0 – 정리/기반
 - [x] 클래스 접두사 확정 — 충돌 시에만 `My` (DECISIONS.md 기록됨)
 - [x] `Source/Test/MMO/` 하위 폴더 구조 생성 및 `Test.Build.cs` include 경로 갱신 — 빌드 성공 확인 (폴더: Core, Backend, Character, Combat, Animation, Data, UI. 빈 폴더는 `.gitkeep`)
 - [x] MMO용 GameMode / PlayerController / Character C++ 껍데기 (`AMyGameMode`, `AMyPlayerController`, `APlayerCharacter`) — 빌드 성공 확인
-- [ ] 위 클래스의 Blueprint 생성 및 DevMap 적용 — 완료 기준: DevMap에서 PIE 진입 시 Pirate 캐릭터가 PlayerStart에 나타나고 카메라가 뒤에서 비춤 (아래 "수동 작업 0-1")
+- [x] 위 클래스의 Blueprint 생성 및 DevMap 적용 — 완료 기준: DevMap에서 PIE 진입 시 Pirate 캐릭터가 PlayerStart에 나타나고 카메라가 뒤에서 비춤 (아래 "수동 작업 0-1")
+- [x] 템플릿 `Test*` 클래스(TestCharacter/GameMode/PlayerController) 삭제 및 `MMO/` 폴더 평탄화(`Source/Test/Core` 등) — 빌드 성공 확인
 - [x] 템플릿 variant 처리 — Platforming/SideScrolling 삭제 완료(빌드 성공), Combat은 Phase 4 종료 시 삭제 (DECISIONS.md 기록)
 - [x] Phase 7(Export)은 현재 순서(Phase 7) 유지로 결정 (DECISIONS.md 기록)
 
 ## Phase 1 – 데이터 파이프라인
-- [ ] `Data/` 폴더와 CSV 작성 규약 확정 (`DESIGN_DATA.md` 채우기)
-- [ ] Row 구조체 작성: Stat, Weapon, Equipment, Skill, Monster, Item, Movement, UI
+- [x] `Data/` 폴더와 CSV 작성 규약 확정 (`DESIGN_DATA.md` 채우기)
+- [ ] Row 구조체 작성: Stat, Weapon, Equipment, Skill, Monster, Item, Movement, UI — 진행: Movement 작성 완료(`FMovementRow`, `Data/MovementTable.csv`; 빌드·DataTable 임포트 확인 대기, "수동 작업 1-1"), 나머지 대기
 - [ ] CSV → DataTable 임포트/재임포트 절차 확립 — 완료 기준: CSV 수정 후 재임포트하면 값이 바뀜
 - [ ] `UDataManager`(GameInstanceSubsystem) ID 조회 — 완료 기준: 로그로 값 확인
 
@@ -94,3 +95,16 @@ Blueprint는 `Content/_Game/Blueprints/` 아래에 모은다. 폴더가 없으�
    - 스킨/애니메이션이 없어 T자 포즈로 보일 수 있다 (Phase 3에서 해결).
 
 C++가 Blueprint에 노출한 항목: `APlayerCharacter`의 `CameraBoom`/`FollowCamera`(Components, ReadOnly), `AMyPlayerController::DefaultMappingContexts`(EditAnywhere). GameMode는 노출 항목 없음(BP Class Defaults의 기본 항목만 사용).
+
+### 1-1. MovementTable DataTable 만들기 (FMovementRow 빌드 후)
+사전 조건: 에디터를 닫고 빌드한 뒤 `Test.uproject`를 연다. 새 헤더(`MovementRow.h`)가 추가됐으므로 필요하면 "Generate Visual Studio project files"를 먼저 한다.
+
+1. Content Browser에서 `Content/_Game/Data/` 폴더를 만든다(없으면 우클릭 → New Folder).
+2. 탐색기에서 `Data/MovementTable.csv`를 그 폴더로 드래그하거나, 폴더에서 우클릭 → Import to ... 로 CSV를 선택한다.
+3. 임포트 창에서 **Choose DataTable Row Type** = `MovementRow`를 선택하고 Apply.
+4. 생성된 애셋 이름을 `DT_MovementTable`로 바꾸고 저장한다.
+5. 확인: 열었을 때 Row `1001`이 보이고 값이 CSV와 같아야 한다 (MaxSpeedCmSec 600 등).
+6. 재임포트 확인: CSV에서 `MaxSpeedCmSec`를 바꾼 뒤 애셋 우클릭 → Reimport → 값이 바뀌어야 한다. 확인 후 원래 값으로 되돌린다.
+7. xlsx: `Data/MovementTable.csv`를 Excel로 열어 `Data/MovementTable.xlsx`로 저장한다 (CSV와 같은 내용, 동기화 규칙은 `DESIGN_DATA.md`).
+
+C++가 Blueprint/에디터에 노출한 항목: `FMovementRow`의 모든 프로퍼티(`EditAnywhere`, `BlueprintReadOnly`). 아직 이 테이블을 읽는 코드는 없다(`UDataManager`는 Phase 1의 다음 항목, 이동 적용은 Phase 2).

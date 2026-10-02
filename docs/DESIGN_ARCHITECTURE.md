@@ -13,11 +13,11 @@
 - 몬스터 AI와 드랍 계산은 서버 책임이므로 클라이언트에는 만들지 않는다. 클라이언트는 애니메이션/연출만.
 
 ## 네이밍
-신규 클래스는 접두사 없이 `Source/Test/MMO/` 폴더로 구분한다. UE에 이미 있는 이름과 충돌하는 경우에만 `My` 접두사를 붙인다 (예: `AMyGameMode`, `AMyPlayerController`는 접두사 사용, `APlayerCharacter`는 충돌이 없어 접두사 없음).
+신규 클래스는 접두사 없이 `Source/Test/` 아래 기능 폴더로 구분한다. UE에 이미 있는 이름과 충돌하는 경우에만 `My` 접두사를 붙인다 (예: `AMyGameMode`, `AMyPlayerController`는 접두사 사용, `APlayerCharacter`는 충돌이 없어 접두사 없음).
 
 ## 폴더 구조 (기본값, Phase 0에서 확정)
 ```
-Source/Test/MMO/
+Source/Test/
   Core/        GameMode, PlayerController, GameInstance, DataManager
   Backend/     IGameBackend, ULocalGameBackend
   Character/   플레이어/몬스터 캐릭터, 컴포넌트

@@ -31,14 +31,13 @@ public class Test : ModuleRules
 			"Test/Variant_Combat/Gameplay",
 			"Test/Variant_Combat/Interfaces",
 			"Test/Variant_Combat/UI",
-			"Test/MMO",
-			"Test/MMO/Core",
-			"Test/MMO/Backend",
-			"Test/MMO/Character",
-			"Test/MMO/Combat",
-			"Test/MMO/Animation",
-			"Test/MMO/Data",
-			"Test/MMO/UI"
+			"Test/Core",
+			"Test/Backend",
+			"Test/Character",
+			"Test/Combat",
+			"Test/Animation",
+			"Test/Data",
+			"Test/UI"
 		});
 
 		// Uncomment if you are using Slate UI

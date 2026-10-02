@@ -8,7 +8,7 @@ IOCP 게임 서버와 연동할 **3D MMORPG의 UE 5.6 클라이언트 기초 베
 
 - 캐릭터: **Pirate** 모델 단일 사용(`Content/Pirate/`). 무기는 **한손검/활**. 맨손 상태는 있으나 공격/스킬은 불가.
 - 이동은 WASD(자동 달리기), 스킬은 숫자키 1~5(무기별 스킬 목록), **콤보 공격 없음**.
-- 기존 Epic Third Person 템플릿 클래스(`Test*`)와 `Variant_Combat`은 **참고용**으로만 두고 수정하지 않으며, 신규 코드는 `Source/Test/MMO/`에 작성합니다. `Variant_Combat`은 Phase 4 종료 시 삭제합니다(Platforming/SideScrolling은 삭제됨).
+- 기존 Epic Third Person 템플릿 클래스(`Test*`)는 삭제됐습니다. `Variant_Combat`은 **참고용**으로만 두고 수정하지 않으며, 신규 코드는 `Source/Test/` 아래 기능 폴더(Core, Character 등)에 작성합니다. `Variant_Combat`은 Phase 4 종료 시 삭제합니다(Platforming/SideScrolling은 삭제됨).
 
 ## 문서 (작업 전에 읽는 순서)
 
@@ -49,7 +49,7 @@ IOCP 게임 서버와 연동할 **3D MMORPG의 UE 5.6 클라이언트 기초 베
 
 ## 네이밍
 
-신규 클래스는 접두사 없이 `Source/Test/MMO/` 폴더로 구분합니다. UE에 이미 있는 이름과 **충돌할 때만 `My` 접두사**를 붙입니다(예: `AMyGameMode`, `AMyPlayerController`. 충돌이 없는 `APlayerCharacter`는 접두사 없음).
+신규 클래스는 접두사 없이 `Source/Test/` 아래 기능 폴더로 구분합니다. UE에 이미 있는 이름과 **충돌할 때만 `My` 접두사**를 붙입니다(예: `AMyGameMode`, `AMyPlayerController`. 충돌이 없는 `APlayerCharacter`는 접두사 없음).
 
 ## 빌드
 
