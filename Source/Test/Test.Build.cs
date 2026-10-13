@@ -18,6 +18,7 @@ public class Test : ModuleRules
 			"StateTreeModule",
 			"GameplayStateTreeModule",
 			"UMG",
+			"DeveloperSettings",
 			"Slate"
 		});
 

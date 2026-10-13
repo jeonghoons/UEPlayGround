@@ -6,12 +6,12 @@
 - 편집은 **xlsx** 또는 **UE DataTable 에디터**에서 할 수 있고, 어느 쪽에서 고쳐도 **항상 CSV와 일치**시킨다 (아래 "동기화 규칙").
 - 버전 관리/마이그레이션은 포트폴리오 단계라 생략한다.
 
-## 테이블 목록 (컬럼은 Row 구조체 작성 시 확정)
+## 테이블 목록 (각 테이블은 해당 기능 작업 시 작성하고 그때 컬럼을 확정)
 | 테이블 | 용도 |
 |---|---|
 | StatTable | 캐릭터/몬스터 기본 스탯 |
-| WeaponTable | 무기 타입(한손검/활), 메시, 소켓, AnimLayer |
-| EquipmentTable | 장비 파츠, 스탯 보정 |
+| WeaponTable | 무기 타입(한손검/두손검/활/총), 메시, 소켓, AnimLayer |
+| EquipmentTable | 장비 슬롯/파츠, `MeshMale`/`MeshFemale`(성별별 메시, 같으면 하나만 채움), 가려지는 몸 부위, 스탯 보정 |
 | SkillTable | 쿨타임, 시전시간, 판정 Shape(Sector/Line/Projectile), 범위, 데미지 계수 |
 | MonsterTable | 몬스터 BP, 스탯, 애니메이션 |
 | ItemTable | 아이템 BP, 종류 |
@@ -43,10 +43,11 @@
 
 ## ID 규칙
 - 테이블마다 독립된 ID 공간이며 `1001`부터 시작한다.
-- 종류 구분이 필요한 테이블은 앞자리로 나눈다. SkillTable은 앞 1자리가 무기 종류다(한손검 `1xxx`, 활 `2xxx`).
+- 종류 구분이 필요한 테이블은 앞자리로 나눈다. SkillTable은 앞 1자리가 무기 종류다(한손검 `1xxx`, 활 `2xxx`. 두손검/총은 해당 무기 작업 시 확정).
 
 ## 조회
-- 조회는 `UDataManager`(GameInstanceSubsystem)를 통해서만 한다.
+- 조회는 `UDataManager`(GameInstanceSubsystem, `Source/Test/Core/`)를 통해서만 한다. 예: `FindMovementRow(Id)`는 행 포인터 또는 nullptr를 반환한다.
+- DataTable 애셋 경로는 코드에 쓰지 않고 `UDataTableSettings`(Project Settings → Game → Data Tables, `Config/DefaultGame.ini`)에서 지정한다. 테이블을 추가하면 이 설정에 프로퍼티를 추가하고 `UDataManager`에 `Find*Row`를 추가한다.
 
 ## 미정
 - UE가 CSV를 읽는 방식: 현재는 DataTable 애셋으로 임포트해서 쓴다. 패키징 빌드에서 `Data/*.csv`를 런타임에 직접 읽어야 하는지는 서버 연동 단계에 가까워질 때 결정한다.

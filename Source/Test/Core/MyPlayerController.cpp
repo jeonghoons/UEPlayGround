@@ -21,3 +21,15 @@ void AMyPlayerController::SetupInputComponent()
 		}
 	}
 }
+
+void AMyPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// 검은사막식: 커서를 숨기고 마우스는 항상 카메라를 돌린다 (커서 모드 전환은 Phase 6)
+	if (IsLocalPlayerController())
+	{
+		bShowMouseCursor = false;
+		SetInputMode(FInputModeGameOnly());
+	}
+}
