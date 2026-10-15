@@ -3,12 +3,17 @@
 진행 상황과 작업 순서를 기록합니다. 설계(목표 아키텍처)는 `DESIGN_*.md`, 확정된 결정은 `DECISIONS.md`에 둡니다.
 **한 번에 하나의 체크박스만 진행하고, 완료하면 즉시 `[x]`로 갱신합니다.**
 
-현재 위치: **Phase 2**
+현재 위치: **Phase 3**
 
 ## 다음 할 일 (재개 시 여기부터)
 1. (완료) 스켈레톤 연결·`ABP_Player`·Anim Class: Compatible Skeletons 등록(A안)으로 해결, `BS_Idle_Walk_Run` Speed 0~600(= `MaxSpeedCmSec` 600)과 일치, PIE Idle/Walk/Run 동작 확인
 2. (완료) 수동 작업 2-4: Movement Id=1001 확인, CSV 재임포트로 이동 속도 반영 PIE 확인. 카메라 거리(`CameraArmLengthCm`) 반영은 미검증이며 카메라 작업 시 확인
-3. 모듈형 캐릭터 구현(Phase 3): Leader = 속옷 입은 FullBody(남/여), 장비는 Follower 겹침(DECISIONS 10-13 확정). 남은 일: ① 수동 작업 3-1 에셋 이동·폴더 분할·개명(`Content/_Game/Character/`) ② 여성 스켈레톤 `SK_Mannequin` Compatible 등록 ③ 슬롯 범위(Head/Top/Bottom/Hands/Feet/Back) 확정 후 `PlayerCharacter`에 Follower 컴포넌트 추가
+3. (완료) 모듈형 캐릭터 구조: Leader = 속옷 입은 FullBody(남/여), 장비는 Follower 겹침(DECISIONS 10-13). `EEquipmentSlot`(Hat/Hair/Top/Bottom/Outfit/Hands/Feet) + `Equip_*` Follower 컴포넌트 + `SetEquipmentMesh` 구현, 빌드 성공, 남성 몸에 Outfit(`SKM_Pirate_Cloth_Body_01`) PIE 확인
+4. 테스트 후 보류 중(사용자 결정): ① Hat/Hair 칸 분리 여부 ② 몸이 옷을 아주 살짝 뚫는 문제(필요 시 몸 머티리얼 WPO `BodyShrinkCm` 파라미터, 몸 전용 머티리얼 복제 필요) ③ 에셋 개명·`SKM_Manny` 메시 삭제·Materials/Textures 정리(EquipmentTable 작성 전에 완료) ④ 여성 몸에 Follower 장비 확인
+5. **다음 작업 (2026-10-15 진행 예정)**: Animation Layer Interface 및 `AL_Unarmed` / `AL_OneHandSword` / `AL_Bow` (Phase 3 해당 체크박스). 작업 전 확인·방침:
+   - 미정: 무기별 Locomotion 애니메이션 출처(DESIGN_ANIMATION 미정 항목). 제안 — 이번 체크박스에서는 세 레이어 모두 기존 `BS_Idle_Walk_Run`을 재사용해 "레이어 링크 구조"만 검증하고, 무기별 실제 애니메이션은 무기 도입(WeaponTable) 시 교체 (애셋 출처가 미정이라 구조 검증과 분리)
+   - 구성: ① 인터페이스(`Locomotion` 함수 등, 공격 함수는 Phase 4에서 추가) ② 레이어 3종이 인터페이스 구현 ③ `ABP_Player`의 AnimGraph에 Linked Anim Layer 노드 연결, 기본 `AL_Unarmed` ④ 완료 기준 — PIE에서 `LinkAnimClassLayers`로 레이어를 바꿔도 Idle/Walk/Run이 끊기지 않음. 장착 전환 흐름 자체는 다음 체크박스("무기 장착/해제 전환 흐름")
+   - 수동 작업(AnimBP/인터페이스 애셋)이 대부분이라 대화창으로 단계별 안내 예정. `UMyAnimInstance` 수정이 필요한지는 그때 판단
 
 ## Phase 0 – 정리/기반
 - [x] 클래스 접두사 확정 — 충돌 시에만 `My` (DECISIONS.md 기록됨)
@@ -33,7 +38,7 @@
 
 ## Phase 3 – 무기/애니메이션
 - [x] 스켈레톤 방침 확정 — UE5 매니퀸 스켈레톤 하나만 사용 (DECISIONS.md). 모듈형 구조는 아래 항목에서 설계
-- [ ] 모듈형 캐릭터 구조 및 기본 바디(의상 없음, 남/여) 적용 — Leader Pose + 슬롯별 컴포넌트, 성별 전환은 Leader 메시 교체 (방침 확정, 구현 대기)
+- [x] 모듈형 캐릭터 구조 및 기본 바디(의상 없음, 남/여) 적용 — Leader Pose + 슬롯별 컴포넌트(`Equip_*`), 성별 전환은 Leader 메시 교체. 빌드 성공, 남성 Outfit PIE 확인 (보류 항목은 "다음 할 일" 4)
 - [ ] Animation Layer Interface 및 `AL_Unarmed` / `AL_OneHandSword` / `AL_Bow` (두손검/총 레이어는 해당 무기 도입 시 추가)
 - [ ] 무기 장착/해제 전환 흐름 (소켓 부착 + 레이어 링크)
 - [ ] WeaponTable 작성(Row 구조체, CSV, DataTable) 및 무기 습득/애니메이션 레이어 지정에 연동
@@ -74,4 +79,5 @@
 - [x] 2-2. `BP_PlayerCharacter`의 Look Action = `IA_MouseLook`, `BP_PlayerController`의 Default Mapping Contexts에 `IMC_MouseLook` 추가, PIE에서 마우스 카메라 회전 확인
 - [x] 2-3. 템플릿 `BS_Idle_Walk_Run`(Direction/Speed 2D, `SK_Mannequin` 표준)을 Pirate 메시(`SKM_Manny_Skeleton`)에서 쓰도록 스켈레톤 연결 + `ABP_Player`(부모 `MyAnimInstance`) 생성, `BP_PlayerCharacter` Mesh에 Anim Class 지정, PIE에서 Idle/Walk/Run 블렌딩 확인
 - [x] 2-4. `BP_PlayerCharacter`의 Movement Id = `1001` 지정, PIE에서 `MovementTable` 값 변경이 이동 속도/카메라 거리에 반영되는지 확인
-- [ ] 3-1. 팩 폴더(메시·머티리얼·텍스처)를 `Content/_Game/Character/`로 이동 → Fix Up Redirectors → 슬롯별 폴더 분할·개명, 여성 스켈레톤을 `SK_Mannequin` Compatible Skeletons에 등록
+- [ ] 3-1. 팩 폴더(메시·머티리얼·텍스처)를 `Content/_Game/Character/`로 이동 → Fix Up Redirectors → 슬롯별 폴더 분할·개명, 여성 스켈레톤을 `SK_Mannequin` Compatible Skeletons에 등록 — 이동·Redirector·폴더 분할 완료, 개명은 테스트 후 진행
+- [x] 3-2. `BP_PlayerCharacter`의 `Equip_*` 컴포넌트에 장비 메시 지정 후 PIE에서 몸을 따라 움직이는지 확인 (남성 Outfit 확인)

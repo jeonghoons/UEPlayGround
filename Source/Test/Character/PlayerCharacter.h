@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "EquipmentSlot.h"
 #include "PlayerCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
+class USkeletalMesh;
+class USkeletalMeshComponent;
 class UInputAction;
 struct FInputActionValue;
 struct FMovementRow;
@@ -29,6 +32,13 @@ class APlayerCharacter : public ACharacter
 	/** 추적 카메라 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> FollowCamera;
+
+	/**
+	 *  장비 칸별 Follower 메시. 몸(GetMesh())을 Leader Pose로 따라가므로 애니메이션은 몸 하나만 재생한다.
+	 *  BP_PlayerCharacter의 컴포넌트 트리(Equip_*)에서 Skeletal Mesh를 지정해 테스트할 수 있다.
+	 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Equipment", meta = (AllowPrivateAccess = "true"))
+	TMap<EEquipmentSlot, TObjectPtr<USkeletalMeshComponent>> EquipmentMeshes;
 
 protected:
 
@@ -69,6 +79,10 @@ private:
 public:
 
 	APlayerCharacter();
+
+	/** 장비 칸의 메시를 바꾼다. nullptr이면 해제(맨몸) */
+	UFUNCTION(BlueprintCallable, Category="Equipment")
+	void SetEquipmentMesh(EEquipmentSlot Slot, USkeletalMesh* NewMesh);
 
 public:
 

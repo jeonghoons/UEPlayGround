@@ -6,6 +6,7 @@
 #include "InputActionValue.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "DataManager.h"
 #include "Engine/GameInstance.h"
 #include "GameFramework/PlayerController.h"
@@ -34,6 +35,30 @@ APlayerCharacter::APlayerCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	// 장비 칸마다 Follower 메시를 만들어 몸(Leader)에 붙인다. 충돌은 캡슐이 맡으므로 끈다
+	const UEnum* SlotEnum = StaticEnum<EEquipmentSlot>();
+	for (const EEquipmentSlot Slot : TEnumRange<EEquipmentSlot>())
+	{
+		const FName ComponentName(*FString::Printf(TEXT("Equip_%s"), *SlotEnum->GetNameStringByValue(static_cast<int64>(Slot))));
+		USkeletalMeshComponent* Equipment = CreateDefaultSubobject<USkeletalMeshComponent>(ComponentName);
+		Equipment->SetupAttachment(GetMesh());
+		Equipment->SetLeaderPoseComponent(GetMesh());
+		Equipment->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		EquipmentMeshes.Add(Slot, Equipment);
+	}
+}
+
+void APlayerCharacter::SetEquipmentMesh(EEquipmentSlot Slot, USkeletalMesh* NewMesh)
+{
+	const TObjectPtr<USkeletalMeshComponent>* Equipment = EquipmentMeshes.Find(Slot);
+	if (!Equipment || !*Equipment)
+	{
+		UE_LOG(LogTest, Warning, TEXT("%s: 장비 칸 %d의 컴포넌트가 없음"), *GetName(), static_cast<int32>(Slot));
+		return;
+	}
+
+	(*Equipment)->SetSkeletalMesh(NewMesh);
 }
 
 const FMovementRow* APlayerCharacter::FindMovementRow() const
